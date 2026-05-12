@@ -2,6 +2,9 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 console.log("Hello, Node.js!");
 import express from 'express';
+import { testConnection } from './src/models/db.js';
+import { getAllOrganizations } from './src/models/organizations.js';
+
 
 // Define the the application environment
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
@@ -24,10 +27,15 @@ app.set('views', path.join(__dirname, 'src/views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 //Routes
-app.listen(PORT, () => {
-  console.log(`Server is running at http://127.0.0.1:${PORT}`);
-  console.log(`Environment: ${NODE_ENV}`);
-});
+app.listen(PORT, async () => {
+    try {
+      await testConnection();
+      console.log(`Server is running at http://127.0.0.1:${PORT}`);
+      console.log(`Environment: ${NODE_ENV}`);
+    } catch (error) {
+      console.error('Error connecting to the database:', error);
+    }
+  });
 
 app.get('/', async (req, res) => {
     const title = 'Home';
@@ -35,8 +43,10 @@ app.get('/', async (req, res) => {
 });
 
 app.get('/organizations', async (req, res) => {
-    const title = 'Our Partner Organizations';
-    res.render('organizations', { title });
+  const organizations = await getAllOrganizations();
+  const title = 'Our Partner Organizations';
+
+  res.render('organizations', { title, organizations });
 });
 
 app.get('/projects', async (req, res) => {
@@ -48,3 +58,4 @@ app.get('/categories', async (req, res) => {
     const title = 'Categories';
     res.render('categories', { title });
 });
+
