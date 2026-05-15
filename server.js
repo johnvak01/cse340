@@ -54,6 +54,7 @@ app.get('/projects', async (req, res) => {
   try {
     const projects = await getAllServiceProjects();
     const title = 'Service Projects';
+    console.log(projects);
     res.render('projects', { title, projects });
   } catch (error) {
     console.error('Error connecting to the database:', error);

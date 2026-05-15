@@ -4,7 +4,8 @@ const getAllServiceProjects = async () => {
     const query = `
         SELECT
 	        SERVICE_PROJECT.PROJECT_TITLE,
-	        ORGANIZATION.ORGANIZATION_NAME 
+	        ORGANIZATION.ORGANIZATION_NAME, 
+            SERVICE_PROJECT.PROJECT_DATE 
         FROM
 	        SERVICE_PROJECT
 	    JOIN 
