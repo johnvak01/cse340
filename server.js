@@ -5,6 +5,7 @@ import express from 'express';
 import { testConnection } from './src/models/db.js';
 import { getAllOrganizations } from './src/models/organizations.js';
 import { getAllServiceProjects } from './src/models/projects.js';
+import { getAllCategories } from './src/models/categories.js';
 
 // Define the the application environment
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
@@ -32,7 +33,6 @@ app.listen(PORT, async () => {
     await testConnection();
     console.log(`Server is running at http://127.0.0.1:${PORT}`);
     console.log(`Environment: ${NODE_ENV}`);
-    console.log(getAllServiceProjects());
   } catch (error) {
     console.error('Error connecting to the database:', error);
   }
@@ -62,7 +62,14 @@ app.get('/projects', async (req, res) => {
 });
 
 app.get('/categories', async (req, res) => {
-  const title = 'Categories';
-  res.render('categories', { title });
+  try {
+    const title = 'Categories';
+    const categories = await getAllCategories();
+    console.log(categories);
+    res.render('categories', { title, categories });
+
+  }catch(error){
+    console.error('Error connecting to the database:', error);
+  }
 });
 
