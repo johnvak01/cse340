@@ -1,12 +1,8 @@
+import express from 'express';
 import { fileURLToPath } from 'url';
 import path from 'path';
-console.log("Hello, Node.js!");
-import express from 'express';
 import { testConnection } from './src/models/db.js';
-import { getAllOrganizations } from './src/models/organizations.js';
-import { getAllServiceProjects } from './src/models/projects.js';
-import { getAllCategories } from './src/models/categories.js';
-
+import { router } from './src/routes.js';
 // Define the the application environment
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
 
@@ -17,16 +13,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-// Set EJS as the templating engine
+
+// Middleware --------------------
+//set view engine
 app.set('view engine', 'ejs');
-
-// Tell Express where to find your templates
-app.set('views', path.join(__dirname, 'src/views'));
-
 
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, 'public')));
-
+// Tell Express where to find your templates
+app.set('views', path.join(__dirname, 'src/views'));
 
 // Middleware to log all incoming requests
 app.use((req, res, next) => {
@@ -42,63 +37,18 @@ app.use((req, res, next) => {
   next();
 });
 
-//Routes
-app.listen(PORT, async () => {
-  try {
-    await testConnection();
-    console.log(`Server is running at http://127.0.0.1:${PORT}`);
-    console.log(`Environment: ${NODE_ENV}`);
-  } catch (error) {
-    console.error('Error connecting to the database:', error);
-  }
-});
+// routes ---------------
+// use router
+app.use(router);
 
-app.get('/', async (req, res) => {
-  const title = 'Home';
-  res.render('home', { title });
-});
 
-app.get('/organizations', async (req, res) => {
-  const organizations = await getAllOrganizations();
-  const title = 'Our Partner Organizations';
 
-  res.render('organizations', { title, organizations });
-});
-
-app.get('/projects', async (req, res) => {
-  try {
-    const projects = await getAllServiceProjects();
-    const title = 'Service Projects';
-    res.render('projects', { title, projects });
-  } catch (error) {
-    console.error('Error connecting to the database:', error);
-  }
-});
-
-app.get('/categories', async (req, res) => {
-  try {
-    const title = 'Categories';
-    const categories = await getAllCategories();
-    res.render('categories', { title, categories });
-
-  } catch (error) {
-    console.error('Error connecting to the database:', error);
-  }
-});
-
-// Test route for 500 errors
-app.get('/test-error', (req, res, next) => {
-  const err = new Error('This is a test error');
-  err.status = 500;
-  next(err);
-});
 // Catch-all route for 404 errors
 app.use((req, res, next) => {
   const err = new Error('Page Not Found');
   err.status = 404;
   next(err);
 });
-
 
 // Global error handler
 app.use((err, req, res, next) => {
@@ -119,4 +69,15 @@ app.use((err, req, res, next) => {
   
   // Render the appropriate error template
   res.status(status).render(`errors/${template}`, context);
+});
+
+// test database connection
+app.listen(PORT, async () => {
+  try {
+    await testConnection();
+    console.log(`Server is running at http://127.0.0.1:${PORT}`);
+    console.log(`Environment: ${NODE_ENV}`);
+  } catch (error) {
+    console.error('Error connecting to the database:', error);
+  }
 });
