@@ -8,8 +8,11 @@
             <% organizations.forEach(organization=> { %>
                 <li><img src="/images/<%= organization.logo_filename %>"
                         alt="<%= organization.organization_name %> logo"><strong>
-                        <%= organization.organization_name %></strong>: 
-                        <%= organization.contact_email %>: 
+                        <a href="/organization/<%= organization.organization_id %>">
+                            <%= organization.organization_name %>
+                        </a>
+                    </strong>:
+                    <%= organization.contact_email %>:
                         <%= organization.organization_description %>
                 </li>
                 <% }); %>
