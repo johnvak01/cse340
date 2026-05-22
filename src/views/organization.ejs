@@ -7,20 +7,20 @@
             <% organizationDetails.organization_name %>
         </h2>
 
-        <img src="/images/<%= organizationDetails.logo_filename %>" alt="<%= organizationDetails.organization_name %>">
+        <img src="/images/<%= organizationDetails.logo_filename %>" alt="<%= organizationDetails.organization_name %>"
+            height="100" width="100">
         <p>
-            <$= organization.organization_description %>
+            <%= organizationDetails.organization_description %>
         </p>
-        <h3>
-            <ul>
-                <% projects.forEach(project=> { %>
-                    <li>
-                        <a href="/project/<%= project.project_id %>">
-                            <%= project.project_title %>"
-                        </a>
-                    </li>
-                    <% }); %>
-            </ul>
-        </h3>
+        <h3>Service Projects</h3>
+        <ul>
+            <% projects.forEach(project=> { %>
+                <li>
+                    <a href="/project/<%= project.project_id %>">
+                        <%= project.project_title %>
+                    </a>
+                </li>
+                <% }); %>
+        </ul>
     </main>
     <%- include('partials/footer') %>

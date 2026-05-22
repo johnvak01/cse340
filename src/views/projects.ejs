@@ -3,14 +3,17 @@
         <h1>
             <%= title %>
         </h1>
-        <h2>Upcoming Service Projects</h2>
+        </p>
         <ul>
-            <% projects.forEach(project => { %>
-                <li>
-                    <%= project.project_date.toISOString().split('T')[0] %> : 
-                    <%= project.project_title %> 
-                    (<%= project.organization_name %>)
-                </li>
+            <% projects.forEach(project=> { %>
+                <a href="/project/<%= project.project_id %>">
+                    <li>
+                        Project: <%= project.project_title %>
+                            <%= project.project_date.toISOString().split('T')[0] %> :
+                                <a href="/organization/<%= project.organization_id %>">(<%= project.organization_name %>
+                                        )</a>
+                    </li>
+                </a>
                 <% }); %>
         </ul>
     </main>
