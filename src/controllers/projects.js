@@ -1,5 +1,6 @@
 
 import { getAllServiceProjects, getProjectDetails, getUpcomingProjects } from '../models/projects.js';
+import {getAllCategoriesbyServiceProjectID} from '../models/categories.js';
 
 
 const showProjectsPage = async (req, res) => {
@@ -17,9 +18,10 @@ const showProjectDetailsPage = async (req, res) => {
   try {
     const projectId = req.params.id;
     const project = await getProjectDetails(projectId);
+    const categories = await getAllCategoriesbyServiceProjectID(projectId);
+    console.log("Categories: ", categories);
     const title = 'Service Project';
-    console.log(project);
-    res.render('project', { title, project});
+    res.render('project', { title, project, categories});
   } catch (error) {
     console.error('Error connecting to the database:', error);
   }
