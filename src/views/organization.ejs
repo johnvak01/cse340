@@ -4,12 +4,12 @@
             <%= title %>
         </h1>
         <h2>
-            <% organizationDetails.organization_name %>
+            <%= organizationDetails.organization_name %>
         </h2>
 
-        <img src="/images/<%= organizationDetails.logo_filename %>" alt="<%= organizationDetails.organization_name %>"
-            height="100" width="100">
+        
         <p>
+            <img src="/images/<%= organizationDetails.logo_filename %>" alt="<%= organizationDetails.organization_name %>" height="100" width="100">
             <%= organizationDetails.organization_description %>
         </p>
         <h3>Service Projects</h3>

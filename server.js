@@ -18,6 +18,9 @@ const app = express();
 //set view engine
 app.set('view engine', 'ejs');
 
+// Express middleware to parse form data from request bodies
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); // For handling JSON data from API requests
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, 'public')));
 // Tell Express where to find your templates
@@ -40,8 +43,6 @@ app.use((req, res, next) => {
 // routes ---------------
 // use router
 app.use(router);
-
-
 
 // Catch-all route for 404 errors
 app.use((req, res, next) => {
