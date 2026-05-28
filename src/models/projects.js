@@ -74,5 +74,25 @@ const getProjectDetails = async (id) => {
     const result = await db.query(query, [id]);
     return result.rows[0];
 };
+const createProject = async (title, description, location, date, organizationId) => {
+    const query = `
+      INSERT INTO SERVICE_PROJECT (PROJECT_TITLE, PROJECT_DESCRIPTION, PROJECT_LOCATION, PROJECT_DATE, ORGANIZATION_ID)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING PROJECT_ID;
+    `;
 
-export { getAllServiceProjects, getProjectsByOrganizationId, getUpcomingProjects, getProjectDetails };
+    const queryParams = [title, description, location, date, organizationId];
+    const result = await db.query(query, queryParams);
+
+    if (result.rows.length === 0) {
+        throw new Error('Failed to create project');
+    }
+
+    if (process.env.ENABLE_SQL_LOGGING === 'true') {
+        console.log('Created new project with ID:', result.rows[0].project_id);
+    }
+
+    return result.rows[0].project_id;
+}
+
+export { getAllServiceProjects, getProjectsByOrganizationId, getUpcomingProjects, getProjectDetails, createProject };

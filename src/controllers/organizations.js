@@ -105,4 +105,4 @@ const processEditOrganizationForm = async (req, res) => {
 
 
 
-export { showOrganizationsPage, showOrganizationDetailsPage, showNewOrganizationForm, processNewOrganizationForm, organizationValidation, showEditOrganizationForm };
+export { showOrganizationsPage, showOrganizationDetailsPage, showNewOrganizationForm, processNewOrganizationForm, organizationValidation, showEditOrganizationForm,processEditOrganizationForm };
