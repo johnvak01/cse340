@@ -5,7 +5,9 @@ const getAllCategories = async () => {
         SELECT
 	        CATEGORY_NAME, CATEGORY_ID
         FROM
-	        CATEGORY;`;
+	        CATEGORY
+        ORDER BY
+            CATEGORY_ID ASC;`;
 
     const result = await db.query(query);
 
@@ -64,7 +66,7 @@ const getAllCategoriesbyServiceProjectID = async (projectId) => {
     return result.rows;
 };
 
-const assignCategoryToProject = async(categoryId, projectId) => {
+const assignCategoryToProject = async (categoryId, projectId) => {
     const query = `
         INSERT INTO CATEGORY_TO_PROJECT (category_id, project_id)
         VALUES ($1, $2);
@@ -73,7 +75,7 @@ const assignCategoryToProject = async(categoryId, projectId) => {
     await db.query(query, [categoryId, projectId]);
 };
 
-const updateCategoryAssignments = async(projectId, categoryIds) => {
+const updateCategoryAssignments = async (projectId, categoryIds) => {
     // First, remove existing category assignments for the project
     const deleteQuery = `
         DELETE FROM CATEGORY_TO_PROJECT
@@ -87,4 +89,37 @@ const updateCategoryAssignments = async(projectId, categoryIds) => {
     }
 };
 
-export { getAllCategories, getCategoryDetails, getAllServiceProjectsByCategoryId, getAllCategoriesbyServiceProjectID, updateCategoryAssignments };
+const createCategory = async (name) => {
+    const query = `
+        INSERT INTO CATEGORY (CATEGORY_NAME)
+        VALUES ($1)
+        RETURNING CATEGORY_ID;
+    `;
+
+    const result = await db.query(query, [name]);
+    return result.rows[0].category_id;
+}
+
+const updateCategory = async (categoryId, name) => {
+    const query = `
+        UPDATE CATEGORY
+        SET CATEGORY_NAME = $2
+        WHERE CATEGORY_ID = $1
+        RETURNING CATEGORY_ID;
+    `;
+
+    console.log(name, categoryId)
+
+    const result = await db.query(query, [categoryId, name]);
+    console.log(result);
+    if (result.rows.length === 0) {
+        throw new Error('Category not found');
+    }
+
+    if (process.env.ENABLE_SQL_LOGGING === 'true') {
+        console.log('Updated category with ID:', categoryId);
+    }
+    return result.rows[0].category_id
+}
+
+export { getAllCategories, getCategoryDetails, getAllServiceProjectsByCategoryId, getAllCategoriesbyServiceProjectID, updateCategoryAssignments, createCategory, updateCategory };

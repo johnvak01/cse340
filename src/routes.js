@@ -5,7 +5,7 @@ import { showOrganizationsPage } from './controllers/organizations.js';
 import { showNewOrganizationForm} from './controllers/organizations.js';
 import { processNewOrganizationForm, organizationValidation, showEditOrganizationForm, processEditOrganizationForm} from './controllers/organizations.js';
 import { showProjectsPage, showProjectDetailsPage, showNewProjectForm, processNewProjectForm, projectValidation, showEditProjectForm, processEditProjectForm } from './controllers/projects.js';
-import { showCategoriesPage, showCategoryDetailsPage, showAssignCategoriesForm, processAssignCategoriesForm } from './controllers/categories.js';
+import { showCategoriesPage, showCategoryDetailsPage, showAssignCategoriesForm, processAssignCategoriesForm, categoryValidation, showNewCategoryForm, processNewCategoryForm, showEditCategoryForm, processEditCategoryForm } from './controllers/categories.js';
 import { show500ErrorPage } from './controllers/errors.js';
 import { showOrganizationDetailsPage } from './controllers/organizations.js';
 
@@ -33,6 +33,11 @@ router.get('/categories', showCategoriesPage);
 router.get('/category/:id', showCategoryDetailsPage);
 router.get('/assign-categories/:projectId', showAssignCategoriesForm);
 router.post('/assign-categories/:projectId', processAssignCategoriesForm);
+
+router.post('/new-category', categoryValidation, processNewCategoryForm);
+router.get('/new-category', showNewCategoryForm);
+router.post('/edit-category/:id', processEditCategoryForm);
+router.get('/edit-category/:id', showEditCategoryForm);
 
 // error-handling routes
 router.get('/test-error', show500ErrorPage);
