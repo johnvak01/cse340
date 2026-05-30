@@ -36,7 +36,7 @@ router.post('/assign-categories/:projectId', processAssignCategoriesForm);
 
 router.post('/new-category', categoryValidation, processNewCategoryForm);
 router.get('/new-category', showNewCategoryForm);
-router.post('/edit-category/:id', processEditCategoryForm);
+router.post('/edit-category/:id', categoryValidation, processEditCategoryForm);
 router.get('/edit-category/:id', showEditCategoryForm);
 
 // error-handling routes
