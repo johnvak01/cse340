@@ -8,6 +8,8 @@ import { showProjectsPage, showProjectDetailsPage, showNewProjectForm, processNe
 import { showCategoriesPage, showCategoryDetailsPage, showAssignCategoriesForm, processAssignCategoriesForm, categoryValidation, showNewCategoryForm, processNewCategoryForm, showEditCategoryForm, processEditCategoryForm } from './controllers/categories.js';
 import { show500ErrorPage } from './controllers/errors.js';
 import { showOrganizationDetailsPage } from './controllers/organizations.js';
+import { showUserRegistrationForm, processUserRegistrationForm } from './controllers/users.js';
+
 
 const router = express.Router();
 //default route
@@ -41,5 +43,9 @@ router.get('/edit-category/:id', showEditCategoryForm);
 
 // error-handling routes
 router.get('/test-error', show500ErrorPage);
+
+// User registration routes
+router.get('/register', showUserRegistrationForm);
+router.post('/register', processUserRegistrationForm);
 
 export {router};
