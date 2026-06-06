@@ -56,4 +56,18 @@ const authenticateUser = async (email, password) => {
     return user; // Authentication successful
 };
 
-export { createUser, authenticateUser };
+const findAllUsers = async () => {
+    const query = `
+    SELECT u.user_id, u.name, u.email, r.role_name, u.role_id 
+    FROM users u
+    JOIN roles r ON u.role_id = r.role_id
+    `;
+
+    const result = await db.query(query);
+    if (result.rows.length === 0) {
+        console.log("No Users Found");
+        return null; // User not found
+    }
+    return result.rows;};
+
+export { createUser, authenticateUser, findAllUsers };
