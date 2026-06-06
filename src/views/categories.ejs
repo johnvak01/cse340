@@ -5,10 +5,16 @@
         </h1>
         <h2>Categories we assist with!</h2>
         <ul>
-            <% categories.forEach(category => { %>
-                <a href="/category/<%= category.category_id%>"><li><%= category.category_name %></li></a>
-            <% }); %>
+            <% categories.forEach(category=> { %>
+                <a href="/category/<%= category.category_id%>">
+                    <li>
+                        <%= category.category_name %>
+                    </li>
+                </a>
+                <% }); %>
         </ul>
-        <a href="/new-category">Add a new category</a>
+        <% if (user && user.role_name==='admin' ) { %>
+            <a href="/new-category">Add a new category</a>
+            <% } %>
     </main>
     <%- include('partials/footer') %>
