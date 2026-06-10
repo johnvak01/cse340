@@ -24,7 +24,7 @@ const createUser = async (name, email, passwordHash) => {
 
 const findUserByEmail = async (email) => {
     const query = `
-    SELECT u.user_id, u.email, u.password_hash, r.role_name, u.role_id 
+    SELECT u.user_id, u.name, u.email, u.password_hash, r.role_name, u.role_id 
     FROM users u
     JOIN roles r ON u.role_id = r.role_id
     WHERE u.email = $1
@@ -68,6 +68,68 @@ const findAllUsers = async () => {
         console.log("No Users Found");
         return null; // User not found
     }
-    return result.rows;};
+    return result.rows;
+};
 
-export { createUser, authenticateUser, findAllUsers };
+const addUserToProject = async (userId, projectId) => {
+    const query = `
+            INSERT INTO user_to_project (user_id, project_id)
+            VALUES ($1, $2)
+            RETURNING user_id, project_id
+        `;
+    const queryParams = [userId, projectId];
+
+    const result = await db.query(query, queryParams);
+
+    if (result.rows.length === 0) {
+        throw new Error('Failed to add user to project');
+    }
+
+    if (process.env.ENABLE_SQL_LOGGING === 'true') {
+        console.log(`Added user ${userId} to project ${projectId}`);
+    }
+
+    return result.rows[0];
+};
+
+const removeUserFromProject = async (userId, projectId) => {
+    const query = `
+    DELETE FROM user_to_project
+    WHERE user_id = $1 AND project_id = $2
+    `;
+    const queryParams = [userId, projectId]; 
+    const result = await db.query(query, queryParams);
+
+    if (result.rowCount === 0) {
+        throw new Error('Failed to remove user from project');
+    }
+    if (process.env.ENABLE_SQL_LOGGING === 'true') {
+        console.log(`Removed user ${userId} from project ${projectId}`);
+    }
+    
+    return true;
+
+
+};
+
+const getUserProjects = async (userId) => {
+    const query = `
+    SELECT utp.project_id, p.project_title
+    FROM user_to_project utp
+    JOIN service_project p ON p.project_id = utp.project_id
+    WHERE utp.user_id = $1
+    `;
+    const queryParams = [userId];
+
+    const result = await db.query(query, queryParams);
+
+    if (result.rows.length === 0) {
+        console.log(`No projects found for user ${userId}`);
+        return []; // No projects found for the user
+    }
+
+    return result.rows;
+};
+
+
+export { createUser, authenticateUser, findAllUsers, addUserToProject, removeUserFromProject, getUserProjects };

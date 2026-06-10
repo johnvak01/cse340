@@ -4,7 +4,7 @@ import { showIndexPage } from './controllers/index.js';
 import { showOrganizationsPage } from './controllers/organizations.js';
 import { showNewOrganizationForm} from './controllers/organizations.js';
 import { processNewOrganizationForm, organizationValidation, showEditOrganizationForm, processEditOrganizationForm} from './controllers/organizations.js';
-import { showProjectsPage, showProjectDetailsPage, showNewProjectForm, processNewProjectForm, projectValidation, showEditProjectForm, processEditProjectForm } from './controllers/projects.js';
+import { showProjectsPage, showProjectDetailsPage, showNewProjectForm, processNewProjectForm, projectValidation, showEditProjectForm, processEditProjectForm, processAddVolunteer, processRemoveVolunteer } from './controllers/projects.js';
 import { showCategoriesPage, showCategoryDetailsPage, showAssignCategoriesForm, processAssignCategoriesForm, categoryValidation, showNewCategoryForm, processNewCategoryForm, showEditCategoryForm, processEditCategoryForm } from './controllers/categories.js';
 import { show500ErrorPage } from './controllers/errors.js';
 import { showOrganizationDetailsPage } from './controllers/organizations.js';
@@ -29,6 +29,10 @@ router.get('/new-project', requireRole('admin'), showNewProjectForm);
 router.post('/new-project', requireRole('admin'), projectValidation, processNewProjectForm);
 router.get('/edit-project/:id', requireRole('admin'), showEditProjectForm);
 router.post('/edit-project/:id', requireRole('admin'), processEditProjectForm);
+
+//volunteer routes
+router.post('/add-volunteer/:projectID', requireLogin, processAddVolunteer);
+router.post('/remove-volunteer/:projectID', requireLogin, processRemoveVolunteer);
 
 //category routes
 router.get('/categories', showCategoriesPage);
@@ -56,5 +60,6 @@ router.get('/dashboard', requireLogin, showDashboard);
 
 // User List routes
 router.get('/users', requireRoleD('admin'), showUsersPage);
+
 
 export {router};

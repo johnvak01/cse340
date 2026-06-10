@@ -11,6 +11,17 @@
         <p>Username: <%= email %>
         </p>
 
+        <% if(userProjects!=null){ userProjects.forEach(project=>{ %>
+            <a href="/project/<%= project.project_id%>">
+                <li>
+                    <%= project.project_title %>:
+                        <form action="/remove-volunteer/<%=project.project_id %>" method="POST">
+                            <button type="submit">Un-Volunteer</button>
+                        </form>
+                </li>
+            </a>
+            <% })}; %>
+
     </main>
 
     <% if (user && user.role_name==='admin' ) { %>

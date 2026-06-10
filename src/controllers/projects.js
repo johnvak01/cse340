@@ -2,7 +2,8 @@
 import { getAllServiceProjects, getProjectDetails, getUpcomingProjects, createProject, updateProject } from '../models/projects.js';
 import { getAllCategoriesbyServiceProjectID } from '../models/categories.js';
 import { getAllOrganizations } from '../models/organizations.js';
-import {body, validationResult} from 'express-validator';
+import { addUserToProject, removeUserFromProject, getUserProjects } from '../models/users.js';
+import { body, validationResult } from 'express-validator';
 
 const projectValidation = [
   body('title')
@@ -41,9 +42,17 @@ const showProjectDetailsPage = async (req, res) => {
     const projectId = req.params.id;
     const project = await getProjectDetails(projectId);
     const categories = await getAllCategoriesbyServiceProjectID(projectId);
+    let userProject = false;
+    if (req.session.user) {
+      const userProjects = await getUserProjects(req.session.user.user_id);
+      if (userProjects != null) {
+        userProject = userProjects.some(p => p.project_id === parseInt(projectId));
+      };
+    };
+
     console.log("Categories: ", categories);
     const title = 'Service Project';
-    res.render('project', { title, project, categories });
+    res.render('project', { title, project, categories, userProject });
   } catch (error) {
     console.error('Error connecting to the database:', error);
   }
@@ -119,6 +128,21 @@ const processEditProjectForm = async (req, res) => {
 
 };
 
+const processAddVolunteer = async (req, res) => {
+  const project_id = req.params.projectID;
+  const user_id = req.session.user.user_id;
+  const result = await addUserToProject(user_id, project_id);
+  req.flash('success', 'You have successfully volunteered for this project!');
+  res.redirect(`/project/${project_id}`);
+};
+
+const processRemoveVolunteer = async (req, res) => {
+  const project_id = req.params.projectID;
+  const user_id = req.session.user.user_id;
+  const result = await removeUserFromProject(user_id, project_id);
+  req.flash('success', 'You have successfully removed yourself from this project.');
+  res.redirect(`/project/${project_id}`);
+};
 
 
-export { showProjectsPage, showProjectDetailsPage, processNewProjectForm, showNewProjectForm, projectValidation, showEditProjectForm, processEditProjectForm };
+export { showProjectsPage, showProjectDetailsPage, processNewProjectForm, showNewProjectForm, projectValidation, showEditProjectForm, processEditProjectForm, processAddVolunteer, processRemoveVolunteer };

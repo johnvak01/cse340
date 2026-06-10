@@ -245,3 +245,41 @@ CREATE TABLE USERS (
 	ROLE_ID INTEGER REFERENCES ROLES (ROLE_ID),
 	CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Insert a test user
+INSERT INTO
+	USERS (NAME, EMAIL, PASSWORD_HASH, ROLE_ID)
+VALUES
+	(
+		'testuser',
+		'test@example.com',
+		'placeholder_hash',
+		1
+	);
+
+-- Join users and roles to see complete information
+SELECT
+	U.USER_ID,
+	U.NAME,
+	U.EMAIL,
+	U.PASSWORD_HASH,
+	R.ROLE_NAME,
+	R.ROLE_DESCRIPTION
+FROM
+	USERS U
+	JOIN ROLES R ON U.ROLE_ID = R.ROLE_ID;
+
+-- Delete the test user
+DELETE FROM USERS
+WHERE
+	EMAIL = 'test@example.com';
+
+UPDATE users SET role_id = (SELECT role_id FROM roles WHERE role_name = 'admin') WHERE email = 'admin@example.com';
+SELECT * FROM users;
+SELECT * FROM roles;
+
+CREATE TABLE USER_TO_PROJECT (
+	USER_TO_PROJECT_ID SERIAL PRIMARY KEY,
+	USER_ID INT REFERENCES USERS (USER_ID) NOT NULL,
+	PROJECT_ID INT REFERENCES SERVICE_PROJECT (PROJECT_ID) NOT NULL
+);

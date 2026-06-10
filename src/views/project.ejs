@@ -34,5 +34,16 @@
                 <% if (user && user.role_name==='admin' ) { %>
                     <p><a href="/assign-categories/<%= project.project_id %>">Edit Categories</a> </p>
                     <% } %>
+
+                        <% if (isLoggedIn) { %>
+                            <%if(!userProject){%>
+                                <form action="/add-volunteer/<%=project.project_id %>" method="POST">
+                                    <button type="submit">Volunteer</button>
+                                </form>
+                                <%} else { %>
+                                    <form action="/remove-volunteer/<%=project.project_id %>" method="POST">
+                                        <button type="submit">Un-Volunteer</button></form>
+                                    <%} %>
+                                        <% } %>
     </main>
     <%- include('partials/footer') %>
